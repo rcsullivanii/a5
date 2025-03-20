@@ -1,3 +1,4 @@
+# team: Robert Sullivan and Cole Vita
 defmodule WaitingRoom do
   # initializes the waiting room (empty)
   def start do
