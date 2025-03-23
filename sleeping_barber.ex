@@ -10,22 +10,22 @@ defmodule WaitingRoom do
       # if receive a request to add to wait list, check if wait is full
       {:add, customer, reply_to} -> # adding reply_to to add call here for synchronous behavior
         if length(customers) < 6 do
-          IO.puts("#{customer} enters the waiting room")
+          IO.puts("#{customer} has entered the waiting room")
           new_customers = customers ++ [customer] # if not, update customers 
           send(reply_to, {:added})
           loop(new_customers) # updates state to include added customer
         else
-          IO.puts("#{customer} leaves, no space in waiting room.")
+          IO.puts("#{customer} leaves - no space in waiting room.")
           send(reply_to, {:full})
           loop(customers) # no update to list, continue
         end
 
-      # queue behavior here
+      # queue behavior is all found here
       {:remove, reply_to} ->
         case customers do
           [first | rest] -> # extract first customer from list (customer is a string here)
             send(reply_to, {:removed, first}) # both reply_to are for synchronous behavior
-            loop(rest) # updates "state" to exclude the removed customer
+            loop(rest) # updates "state" to exclude the removed customer (just rest of waiting list now)
           [] ->
             send(reply_to, {:empty})
             loop(customers)
@@ -123,7 +123,7 @@ defmodule Barber do
       {:cut_hair, customer} ->
         IO.puts("Cutting hair for #{customer}")
         :timer.sleep(:rand.uniform(6000))
-        IO.puts("#{customer} is done with the haircut")
+        IO.puts("#{customer} finished up with the haircut")
         send(shop, {:barber_done})
         loop(shop)
     end
